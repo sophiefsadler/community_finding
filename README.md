@@ -1,7 +1,7 @@
 # community_finding
 
 ## Random Forest Feature Selection Experiments
-You can find all the experiments that have been run so far in jupyter notebooks. There 3 folders - Node_Features, Pair_Features, and Community_Features, splitting the code and data into experiments run on these 3 different levels. Each of these has 2 subfolders - Notebooks, which contains the jupyter notebook, and Data, which contains the CSV files.
+You can find all the experiments that have been run so far in jupyter notebooks. There are 3 folders - Node_Features, Pair_Features, and Community_Features, splitting the code and data into experiments run on these 3 different levels. Each of these has 2 subfolders - Notebooks, which contains the jupyter notebook, and Data, which contains the CSV files.
 ### Node Feature Level
 - **Initial Experiment**: The node-level features are described and calculated in the node_feature_calculation notebook. The first 5 basic features were compared in the node_feature_ranking notebook.
 - **Additional Features**: An experiment was run with a larger number of features in the node_feature_ranking_v2 notebook.
