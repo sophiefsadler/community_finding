@@ -10,9 +10,13 @@ Options:
 
 """
 
+import os
 import numpy as np
+import yaml
 
 import community
+from networkx.algorithms.community.centrality import girvan_newman
+from networkx.algorithms.community import modularity
 from infomap import Infomap
 
 from docopt import docopt
@@ -26,13 +30,35 @@ def calc_louvain(G):
         partition = community.best_partition(G)
         partition_list = []
         for _, comm_index in partition.items():
-            partition_list.append(comm_index)
+            partition_list.append(comm_index+1) # Louvain indexes from 0, so add 1
         partitions.append(partition_list)
     partitions = np.array(partitions)
     return partitions
 
 
 def calc_gn(G):
+    print('Calculating partitions')
+    partitions = []
+    for k in trange(100):
+        communities_generator = girvan_newman(G)
+        partition = next(communities_generator)
+        modularity_new = modularity(G, partition)
+
+        modularity_old = 0.00001
+        while modularity_new > modularity_old:
+            modularity_old = modularity_new
+            final_partition = list(partition)
+            partition = next(communities_generator)
+            modularity_new = modularity(G, partition)
+
+        partition_list = [0 for _ in range(200)]
+        for comm_index, comm in enumerate(partition):
+            for node in comm:
+                partition_list[node] = comm_index + 1 # Index from 1
+
+        partitions.append(partition_list)
+
+    partitions = np.array(partitions)
     return partitions
 
 
@@ -41,9 +67,9 @@ def calc_infomap(G):
     partitions = []
     for k in trange(1000):
         im = Infomap()
-        im.add_edges(range(200))
+        im.add_nodes(range(200))
         im.add_links(list(G.edges()))
-        im.run()
+        im.run('--silent')
         partition = im.get_modules()
         partition_list = []
         for _, comm_index in partition.items():
@@ -67,18 +93,25 @@ def calc_partitions(G, args):
     where 1000 is the number of runs of the community finding algorithm, and n is the
     number of nodes for the graph. Each entry in the array is the integer community label
     for that node during that run of the algorithm.
+
+    For consistency, all outputs will index communities from 1.
     '''
     if args.get('louvain'):
         partitions = calc_louvain(G)
+        folder = 'Louvain_Check'
     elif args.get('gn'):
         partitions = calc_gn(G)
+        folder = 'GN'
     elif args.get('infomap'):
         partitions = calc_infomap(G)
+        folder = 'Infomap'
     elif args.get('cfinder'):
         partitions = calc_cfinder(G)
+        folder = 'CFinder'
     elif args.get('infomod'):
         partitions = calc_infomod(G)
-    return partitions
+        folder = 'Infomod'
+    return partitions, folder
 
 
 if __name__ == '__main__':
@@ -90,4 +123,7 @@ if __name__ == '__main__':
             G = graph_info['G']
             for node in G.nodes:
                 del G.nodes[node]['community']
-            partitions = calc_partitions(G, args)
+            partitions, folder = calc_partitions(G, args)
+            path = os.path.join('Community_Data', folder, 'Runs', 
+                                'graph_0{1}_mu_0_{0}_runs.npy'.format(i,j))
+            np.save(path, partitions)
