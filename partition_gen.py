@@ -26,7 +26,7 @@ from tqdm import tqdm, trange
 def calc_louvain(G):
     print('Calculating partitions')
     partitions = []
-    for k in trange(1000):
+    for k in trange(100):
         partition = community.best_partition(G)
         partition_list = []
         for _, comm_index in partition.items():
@@ -39,7 +39,7 @@ def calc_louvain(G):
 def calc_gn(G):
     print('Calculating partitions')
     partitions = []
-    for k in trange(100):
+    for k in trange(10):
         communities_generator = girvan_newman(G)
         partition = next(communities_generator)
         modularity_new = modularity(G, partition)
@@ -98,7 +98,7 @@ def calc_partitions(G, args):
     '''
     if args.get('louvain'):
         partitions = calc_louvain(G)
-        folder = 'Louvain_Check'
+        folder = 'Louvain'
     elif args.get('gn'):
         partitions = calc_gn(G)
         folder = 'GN'
@@ -118,12 +118,12 @@ if __name__ == '__main__':
     args = docopt(__doc__)
     for i in [1, 2, 3, 4]:
         for j in [1, 2, 3, 4, 5]:
-            with open('lfr_graphs/mu_0_{0}/graph_0{1}/graph_0{1}_mu_0_{0}.yml'.format(i, j)) as f:
+            with open('LFR_Graph_Data/mu_0_{0}/graph_0{1}/graph_0{1}_mu_0_{0}.yml'.format(i, j)) as f:
                 graph_info = yaml.load(f, Loader=yaml.Loader)
             G = graph_info['G']
             for node in G.nodes:
                 del G.nodes[node]['community']
             partitions, folder = calc_partitions(G, args)
-            path = os.path.join('Community_Data', folder, 'Runs', 
-                                'graph_0{1}_mu_0_{0}_runs.npy'.format(i,j))
+            path = os.path.join('LFR_Graph_Data', 'Community_Data', folder, 'Runs', 
+                                'graph_0{1}_mu_0_{0}_runs.npy'.format(i, j))
             np.save(path, partitions)

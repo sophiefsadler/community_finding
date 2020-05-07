@@ -21,7 +21,7 @@ from tqdm import tqdm, trange
 
 def get_file_names(i,j, args):
     if args.get('louvain'):
-        folder = 'Louvain_Check'
+        folder = 'Louvain'
     elif args.get('gn'):
         folder = 'GN'
     elif args.get('infomap'):
@@ -30,9 +30,9 @@ def get_file_names(i,j, args):
         folder = 'CFinder'
     elif args.get('infomod'):
         folder = 'Infomod'
-    parts_file = os.path.join('Community_Data', folder, 'Runs',
+    parts_file = os.path.join('LFR_Graph_Data', 'Community_Data', folder, 'Runs',
                               'graph_0{0}_mu_0_{1}_runs.npy'.format(j,i))
-    coassociation_file = os.path.join('Community_Data', folder, 'Coassociation',
+    coassociation_file = os.path.join('LFR_Graph_Data', 'Community_Data', folder, 'Coassociation',
                                       'graph_0{0}_mu_0_{1}_coassociation.npy'.format(j,i))
     return parts_file, coassociation_file
 

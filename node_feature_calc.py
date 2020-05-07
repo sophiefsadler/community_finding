@@ -142,7 +142,7 @@ def new_node_metrics(node_metrics, partitions, node_degrees):
 
 def algo_retrieve(args):
     if args.get('louvain'):
-        algo = 'Final_Louvain_Check'
+        algo = 'Louvain'
     elif args.get('gn'):
         algo = 'GN'
     elif args.get('infomap'):
@@ -155,13 +155,12 @@ def algo_retrieve(args):
 
 
 def get_file_names(i,j, algo):
-    parts_file = os.path.join('Community_Data', algo, 'Runs',
+    parts_file = os.path.join('LFR_Graph_Data', 'Community_Data', algo, 'Runs',
                               'graph_0{0}_mu_0_{1}_runs.npy'.format(j,i))
-    coassociation_file = os.path.join('Community_Data', algo, 'Coassociation',
+    coassociation_file = os.path.join('LFR_Graph_Data', 'Community_Data', algo, 'Coassociation',
                                       'graph_0{0}_mu_0_{1}_coassociation.npy'.format(j,i))
-    graph_file = 'LFR_Graphs/mu_0_{0}/graph_0{1}/graph_0{1}_mu_0_{0}.yml'.format(i, j)
-    final_folder = 'Node_Features/' + algo + '_Data'
-    return parts_file, coassociation_file, graph_file, final_folder
+    graph_file = 'LFR_Graph_Data/mu_0_{0}/graph_0{1}/graph_0{1}_mu_0_{0}.yml'.format(i, j)
+    return parts_file, coassociation_file, graph_file
 
 
 def append_to_dataframe(X, node_metrics, i, j):
@@ -173,7 +172,7 @@ def append_to_dataframe(X, node_metrics, i, j):
 
 
 def save_datasets(X_train, X_test, y_train, y_test, algo):
-    final_folder = 'Node_Features/' + algo + '_Data/'
+    final_folder = 'LFR_Graph_Data/' + algo + '_Data/'
     X_train.to_csv(final_folder + 'node_x_train.csv')
     X_test.to_csv(final_folder + 'node_x_test.csv')
     y_train.to_csv(final_folder + 'node_y_train.csv')
@@ -187,7 +186,7 @@ if __name__ == '__main__':
     X = pd.DataFrame()
     node_entropies = []
     for i, j in tqdm(graphs):
-        parts_file, coassociation_file, graph_file, final_folder = get_file_names(i, j, algo)
+        parts_file, coassociation_file, graph_file = get_file_names(i, j, algo)
         parts = np.load(parts_file)
         C = np.load(coassociation_file)
         with open(graph_file) as f:
