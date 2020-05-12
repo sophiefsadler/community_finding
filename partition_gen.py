@@ -3,7 +3,7 @@ Run a community finding algorithm for many runs to obtain data from which to
 calculate the coassociation matrix and certain node features.
 
 Usage:
-  partition_gen.py (louvain | gn | infomap | cfinder | infomod)
+  partition_gen.py (louvain | gn | infomap | lpa)
 
 Options:
   -h --help            Show this help message
@@ -17,6 +17,7 @@ import yaml
 import community
 from networkx.algorithms.community.centrality import girvan_newman
 from networkx.algorithms.community import modularity
+from networkx.algorithms.community.label_propagation import asyn_lpa_communities
 from infomap import Infomap
 
 from docopt import docopt
@@ -79,18 +80,24 @@ def calc_infomap(G):
     return partitions
 
 
-def calc_cfinder(G):
-    return partitions
-
-
-def calc_infomod(G):
+def calc_lpa(G):
+    print('Calculating partitions')
+    partitions = []
+    for k in trange(1000):
+        partition_list = [0 for _ in range(200)]
+        partition = list(asyn_lpa_communities(G))
+        for comm_index, comm in enumerate(partition):
+            for node in comm:
+                partition_list[node] = comm_index + 1 # Index from 1
+        partitions.append(partition_list)
+    partitions = np.array(partitions)
     return partitions
 
 
 def calc_partitions(G, args):
     '''
-    In all cases, the partitions returned at the end should be a 1000 x n numpy array,
-    where 1000 is the number of runs of the community finding algorithm, and n is the
+    In all cases, the partitions returned at the end should be a m x n numpy array,
+    where m is the number of runs of the community finding algorithm, and n is the
     number of nodes for the graph. Each entry in the array is the integer community label
     for that node during that run of the algorithm.
 
@@ -105,12 +112,9 @@ def calc_partitions(G, args):
     elif args.get('infomap'):
         partitions = calc_infomap(G)
         folder = 'Infomap'
-    elif args.get('cfinder'):
-        partitions = calc_cfinder(G)
-        folder = 'CFinder'
-    elif args.get('infomod'):
-        partitions = calc_infomod(G)
-        folder = 'Infomod'
+    elif args.get('lpa'):
+        partitions = calc_lpa(G)
+        folder = 'LPA'
     return partitions, folder
 
 

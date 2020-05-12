@@ -3,7 +3,7 @@ Calculate the coassociation matrix from the runs of the community finding
 algorithm.
 
 Usage:
-  coassociation_gen.py (louvain | gn | infomap | cfinder | infomod)
+  coassociation_gen.py (louvain | gn | infomap | lpa)
 
 Options:
   -h --help            Show this help message
@@ -26,10 +26,8 @@ def get_file_names(i,j, args):
         folder = 'GN'
     elif args.get('infomap'):
         folder = 'Infomap'
-    elif args.get('cfinder'):
-        folder = 'CFinder'
-    elif args.get('infomod'):
-        folder = 'Infomod'
+    elif args.get('lpa'):
+        folder = 'LPA'
     parts_file = os.path.join('LFR_Graph_Data', 'Community_Data', folder, 'Runs',
                               'graph_0{0}_mu_0_{1}_runs.npy'.format(j,i))
     coassociation_file = os.path.join('LFR_Graph_Data', 'Community_Data', folder, 'Coassociation',

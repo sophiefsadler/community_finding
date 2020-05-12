@@ -3,7 +3,7 @@ Calculate the node features for every graph, given the coassociation matrix
 produced by each of the algorithms.
 
 Usage:
-  node_feature_calc.py (louvain | gn | infomap | cfinder | infomod)
+  node_feature_calc.py (louvain | gn | infomap | lpa)
 
 Options:
   -h --help            Show this help message
@@ -147,10 +147,8 @@ def algo_retrieve(args):
         algo = 'GN'
     elif args.get('infomap'):
         algo = 'Infomap'
-    elif args.get('cfinder'):
-        algo = 'CFinder'
-    elif args.get('infomod'):
-        algo = 'Infomod'
+    elif args.get('lpa'):
+        algo = 'LPA'
     return algo
 
 
