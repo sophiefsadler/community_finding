@@ -157,7 +157,7 @@ def get_file_names(i,j, algo):
                               'graph_0{0}_mu_0_{1}_runs.npy'.format(j,i))
     coassociation_file = os.path.join('LFR_Graph_Data', 'Community_Data', algo, 'Coassociation',
                                       'graph_0{0}_mu_0_{1}_coassociation.npy'.format(j,i))
-    graph_file = 'LFR_Graph_Data/mu_0_{0}/graph_0{1}/graph_0{1}_mu_0_{0}.yml'.format(i, j)
+    graph_file = 'LFR_Graph_Data/mu_0_{0}/graph_0{1}/graph_0{1}_mu_0_{0}.yml'.format(i,j)
     return parts_file, coassociation_file, graph_file
 
 
@@ -170,7 +170,7 @@ def append_to_dataframe(X, node_metrics, i, j):
 
 
 def save_datasets(X_train, X_test, y_train, y_test, algo):
-    final_folder = 'LFR_Graph_Data/' + algo + '_Data/'
+    final_folder = 'LFR_Graph_Data' + algo + '_Data/'
     X_train.to_csv(final_folder + 'node_x_train.csv')
     X_test.to_csv(final_folder + 'node_x_test.csv')
     y_train.to_csv(final_folder + 'node_y_train.csv')
