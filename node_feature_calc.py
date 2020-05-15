@@ -170,7 +170,7 @@ def append_to_dataframe(X, node_metrics, i, j):
 
 
 def save_datasets(X_train, X_test, y_train, y_test, algo):
-    final_folder = 'LFR_Graph_Data' + algo + '_Data/'
+    final_folder = 'LFR_Graph_Data/' + algo + '_Data/'
     X_train.to_csv(final_folder + 'node_x_train.csv')
     X_test.to_csv(final_folder + 'node_x_test.csv')
     y_train.to_csv(final_folder + 'node_y_train.csv')

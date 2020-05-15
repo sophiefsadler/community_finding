@@ -27,7 +27,7 @@ from tqdm import tqdm, trange
 def calc_louvain(G):
     print('Calculating partitions')
     partitions = []
-    for k in trange(100):
+    for k in trange(1000):
         partition = community.best_partition(G)
         partition_list = []
         for _, comm_index in partition.items():
@@ -40,7 +40,7 @@ def calc_louvain(G):
 def calc_gn(G):
     print('Calculating partitions')
     partitions = []
-    for k in trange(10):
+    for k in trange(1000):
         communities_generator = girvan_newman(G)
         partition = next(communities_generator)
         modularity_new = modularity(G, partition)
@@ -96,8 +96,8 @@ def calc_lpa(G):
 
 def calc_partitions(G, args):
     '''
-    In all cases, the partitions returned at the end should be a m x n numpy array,
-    where m is the number of runs of the community finding algorithm, and n is the
+    In all cases, the partitions returned at the end should be a 1000 x n numpy array,
+    where 1000 is the number of runs of the community finding algorithm, and n is the
     number of nodes for the graph. Each entry in the array is the integer community label
     for that node during that run of the algorithm.
 
