@@ -3,7 +3,7 @@ Calculate the coassociation matrix from the runs of the community finding
 algorithm.
 
 Usage:
-  coassociation_gen.py (louvain | gn | infomap | lpa)
+  coassociation_gen.py (louvain | infomap | lpa)
 
 Options:
   -h --help            Show this help message
@@ -22,8 +22,6 @@ from tqdm import tqdm, trange
 def get_file_names(i,j, args):
     if args.get('louvain'):
         folder = 'Louvain'
-    elif args.get('gn'):
-        folder = 'GN'
     elif args.get('infomap'):
         folder = 'Infomap'
     elif args.get('lpa'):

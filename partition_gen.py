@@ -3,7 +3,7 @@ Run a community finding algorithm for many runs to obtain data from which to
 calculate the coassociation matrix and certain node features.
 
 Usage:
-  partition_gen.py (louvain | gn | infomap | lpa)
+  partition_gen.py (louvain | infomap | lpa)
 
 Options:
   -h --help            Show this help message
@@ -33,32 +33,6 @@ def calc_louvain(G):
         for _, comm_index in partition.items():
             partition_list.append(comm_index+1) # Louvain indexes from 0, so add 1
         partitions.append(partition_list)
-    partitions = np.array(partitions)
-    return partitions
-
-
-def calc_gn(G):
-    print('Calculating partitions')
-    partitions = []
-    for k in trange(1000):
-        communities_generator = girvan_newman(G)
-        partition = next(communities_generator)
-        modularity_new = modularity(G, partition)
-
-        modularity_old = 0.00001
-        while modularity_new > modularity_old:
-            modularity_old = modularity_new
-            final_partition = list(partition)
-            partition = next(communities_generator)
-            modularity_new = modularity(G, partition)
-
-        partition_list = [0 for _ in range(200)]
-        for comm_index, comm in enumerate(partition):
-            for node in comm:
-                partition_list[node] = comm_index + 1 # Index from 1
-
-        partitions.append(partition_list)
-
     partitions = np.array(partitions)
     return partitions
 
@@ -106,9 +80,6 @@ def calc_partitions(G, args):
     if args.get('louvain'):
         partitions = calc_louvain(G)
         folder = 'Louvain'
-    elif args.get('gn'):
-        partitions = calc_gn(G)
-        folder = 'GN'
     elif args.get('infomap'):
         partitions = calc_infomap(G)
         folder = 'Infomap'

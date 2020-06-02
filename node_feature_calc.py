@@ -3,7 +3,7 @@ Calculate the node features for every graph, given the coassociation matrix
 produced by each of the algorithms.
 
 Usage:
-  node_feature_calc.py (louvain | gn | infomap | lpa)
+  node_feature_calc.py (louvain | infomap | lpa)
 
 Options:
   -h --help            Show this help message
@@ -12,6 +12,7 @@ Options:
 
 import os
 import yaml
+import math
 import numpy as np
 import pandas as pd
 import networkx as nx
@@ -31,7 +32,10 @@ def calc_node_metrics(G):
     node_av_shortest_paths = {}
     for i in range(G.number_of_nodes()):
         shortest_paths = nx.algorithms.shortest_paths.generic.shortest_path_length(G, source=i)
-        average_shortest_path = np.mean(list(shortest_paths.values())[1:])
+        if list(shortest_paths.values())[1:] != []:
+            average_shortest_path = np.mean(list(shortest_paths.values())[1:])
+        else:
+            average_shortest_path = 0
         node_av_shortest_paths[i] = average_shortest_path
     node_metrics = {'Degree': node_degrees, 'Clustering Coefficient': node_clustering_coefficients, 'Betweenness': node_betweenness, 
                     'Closeness': node_closeness, 'Shortest Path': node_av_shortest_paths, 'Eigenvector': node_eigenvector}
@@ -143,8 +147,6 @@ def new_node_metrics(node_metrics, partitions, node_degrees):
 def algo_retrieve(args):
     if args.get('louvain'):
         algo = 'Louvain'
-    elif args.get('gn'):
-        algo = 'GN'
     elif args.get('infomap'):
         algo = 'Infomap'
     elif args.get('lpa'):
@@ -177,6 +179,20 @@ def save_datasets(X_train, X_test, y_train, y_test, algo):
     y_test.to_csv(final_folder + 'node_y_test.csv')
 
 
+def element_entropy(C):
+    E = np.empty_like(C)
+    rows, cols = E.shape
+    for row in range(rows):
+        for col in range(cols):
+            p = C[row,col]
+            if p > 0:
+                E[row,col] = -p * math.log(p, 2)
+            else:
+                E[row,col] = 0
+    entrop = np.mean(E, axis=1)
+    return entrop
+
+
 if __name__ == '__main__':
     args = docopt(__doc__)
     algo = algo_retrieve(args)
@@ -188,16 +204,16 @@ if __name__ == '__main__':
         parts = np.load(parts_file)
         C = np.load(coassociation_file)
         with open(graph_file) as f:
-                graph_info = yaml.load(f, Loader=yaml.Loader)
+            graph_info = yaml.load(f, Loader=yaml.Loader)
         G = graph_info['G']
         parts = convert_parts_format(parts)
         node_metrics, node_degrees = calc_node_metrics(G)
         node_metrics = new_node_metrics(node_metrics, parts, node_degrees)
         X = append_to_dataframe(X, node_metrics, i, j)
-        entropies = entropy(C) / C.shape[0]
+        entropies = element_entropy(C)
         node_entropies += list(entropies)
     node_entropies = np.array(node_entropies)
-    y = np.where(node_entropies < 0.0195, 0, 1)
+    y = np.where(node_entropies < 0.2, 0, 1)
     y = pd.DataFrame(y, index=X.index, columns=['Stability'])
     X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2)
     save_datasets(X_train, X_test, y_train, y_test, algo)
