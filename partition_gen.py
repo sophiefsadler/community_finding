@@ -10,9 +10,11 @@ Options:
 
 """
 
+import time
 import os
 import numpy as np
 import yaml
+import pickle
 
 import community
 from networkx.algorithms.community.centrality import girvan_newman
@@ -27,21 +29,28 @@ from tqdm import tqdm, trange
 def calc_louvain(G):
     print('Calculating partitions')
     partitions = []
+    seeds = []
     for k in trange(1000):
+        seed = int(time.time() * 1000)
+        random.seed(seed)
+        seeds.append(seed)
         partition = community.best_partition(G)
         partition_list = []
         for _, comm_index in partition.items():
             partition_list.append(comm_index+1) # Louvain indexes from 0, so add 1
         partitions.append(partition_list)
     partitions = np.array(partitions)
-    return partitions
+    return partitions, seeds
 
 
 def calc_infomap(G):
     print('Calculating partitions')
     partitions = []
+    seeds = []
     for k in trange(1000):
-        im = Infomap()
+        seed = int(time.time() * 1000)
+        seeds.append(seed)
+        im = Infomap('-s {0}'.format(seed))
         im.add_nodes(range(200))
         im.add_links(list(G.edges()))
         im.run('--silent')
@@ -51,13 +60,17 @@ def calc_infomap(G):
             partition_list.append(comm_index)
         partitions.append(partition_list)
     partitions = np.array(partitions)
-    return partitions
+    return partitions, seeds
 
 
 def calc_lpa(G):
     print('Calculating partitions')
     partitions = []
+    seeds = []
     for k in trange(1000):
+        seed = int(time.time() * 1000)
+        random.seed(seed)
+        seed.append(seed)
         partition_list = [0 for _ in range(200)]
         partition = list(asyn_lpa_communities(G))
         for comm_index, comm in enumerate(partition):
@@ -65,7 +78,7 @@ def calc_lpa(G):
                 partition_list[node] = comm_index + 1 # Index from 1
         partitions.append(partition_list)
     partitions = np.array(partitions)
-    return partitions
+    return partitions, seeds
 
 
 def calc_partitions(G, args):
@@ -78,15 +91,15 @@ def calc_partitions(G, args):
     For consistency, all outputs will index communities from 1.
     '''
     if args.get('louvain'):
-        partitions = calc_louvain(G)
+        partitions, seeds = calc_louvain(G)
         folder = 'Louvain'
     elif args.get('infomap'):
-        partitions = calc_infomap(G)
+        partitions, seeds = calc_infomap(G)
         folder = 'Infomap'
     elif args.get('lpa'):
-        partitions = calc_lpa(G)
+        partitions, seeds = calc_lpa(G)
         folder = 'LPA'
-    return partitions, folder
+    return partitions, seeds, folder
 
 
 if __name__ == '__main__':
@@ -98,7 +111,11 @@ if __name__ == '__main__':
             G = graph_info['G']
             for node in G.nodes:
                 del G.nodes[node]['community']
-            partitions, folder = calc_partitions(G, args)
+            partitions, seeds, folder = calc_partitions(G, args)
             path = os.path.join('LFR_Graph_Data', 'Community_Data', folder, 'Runs', 
                                 'graph_0{1}_mu_0_{0}_runs.npy'.format(i, j))
             np.save(path, partitions)
+            seeds_path = os.path.join('LFR_Graph_Data', 'Community_Data', folder, 'Runs', 
+                                      'graph_0{1}_mu_0_{0}_seeds'.format(i, j))
+            with open(seeds_path, 'wb') as fp:
+                pickle.dump(seeds, fp)
