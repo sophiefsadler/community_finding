@@ -11,6 +11,7 @@ Options:
 """
 
 import time
+import random
 import os
 import numpy as np
 import yaml
@@ -70,7 +71,7 @@ def calc_lpa(G):
     for k in trange(1000):
         seed = int(time.time() * 1000)
         random.seed(seed)
-        seed.append(seed)
+        seeds.append(seed)
         partition_list = [0 for _ in range(200)]
         partition = list(asyn_lpa_communities(G))
         for comm_index, comm in enumerate(partition):
@@ -112,10 +113,10 @@ if __name__ == '__main__':
             for node in G.nodes:
                 del G.nodes[node]['community']
             partitions, seeds, folder = calc_partitions(G, args)
-            path = os.path.join('LFR_Graph_Data', 'Community_Data', folder, 'Runs', 
+            path = os.path.join('LFR_Graph_Data', 'Community_Data', folder, 'Runs_2', 
                                 'graph_0{1}_mu_0_{0}_runs.npy'.format(i, j))
             np.save(path, partitions)
-            seeds_path = os.path.join('LFR_Graph_Data', 'Community_Data', folder, 'Runs', 
+            seeds_path = os.path.join('LFR_Graph_Data', 'Community_Data', folder, 'Runs_2', 
                                       'graph_0{1}_mu_0_{0}_seeds'.format(i, j))
             with open(seeds_path, 'wb') as fp:
                 pickle.dump(seeds, fp)
