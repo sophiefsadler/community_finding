@@ -113,10 +113,10 @@ if __name__ == '__main__':
             for node in G.nodes:
                 del G.nodes[node]['community']
             partitions, seeds, folder = calc_partitions(G, args)
-            path = os.path.join('LFR_Graph_Data', 'Community_Data', folder, 'Runs_2', 
+            path = os.path.join('LFR_Graph_Data/', 'Community_Data', folder, 'Runs', 
                                 'graph_0{1}_mu_0_{0}_runs.npy'.format(i, j))
             np.save(path, partitions)
-            seeds_path = os.path.join('LFR_Graph_Data', 'Community_Data', folder, 'Runs_2', 
-                                      'graph_0{1}_mu_0_{0}_seeds'.format(i, j))
+            seeds_path = os.path.join('LFR_Graph_Data/', 'Community_Data', folder, 'Runs', 
+                                    'graph_0{1}_mu_0_{0}_seeds'.format(i, j))
             with open(seeds_path, 'wb') as fp:
                 pickle.dump(seeds, fp)
