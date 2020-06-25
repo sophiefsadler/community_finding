@@ -9,8 +9,13 @@ import community
 import random
 import yaml
 
-n, tau1, tau2 = 200, 3, 1.5
-av, mx, mn = 7, 35, 20
+# Parameters used for 200 node graphs
+# n, tau1, tau2 = 200, 3, 1.5
+# av, mx, mn = 7, 35, 20
+
+# Parameters used for 1000 node graphs
+n, tau1, tau2 = 1000, 3, 1.5
+av, mx, mn = 25, 250, 100
 
 graph_gen_info = {'n': n, 'tau1': tau1, 'tau2': tau2, 'mu': 0, 'av_degree': av, 
             'max_degree': mx, 'min_c': mn, 'seed': 0, 'G': 0}
@@ -34,10 +39,10 @@ for mu in mu_vals:
                 pass
         graph_gen_info['seed'] = seed
         graph_gen_info['G'] = G
-        with open('LFR_Graph_Data/mu_0_{1}/graph_0{0}/graph_0{0}_mu_0_{1}.yml'.format(i+1, int(mu*10)), 'w') as f:
+        with open('LFR_Graph_Data/1000_Node/mu_0_{1}/graph_0{0}/graph_0{0}_mu_0_{1}.yml'.format(i+1, int(mu*10)), 'w') as f:
             yaml.dump(graph_gen_info, f)
         pos = nx.spring_layout(G, k=0.5)
-        plt.figure(1, figsize=(12,12))
+        plt.figure(1, figsize=(20,20)) #Figsize (20,20) for 1000 node graph required, but (12,12) fine for 200 node
         communities = []
         ground_truth_communities = []
         for node in G.nodes:
@@ -48,5 +53,5 @@ for mu in mu_vals:
             ground_truth_communities.append(ground_truth)
         cols = [scheme[G.nodes[i]['community']] for i in range(len(G.nodes))]
         nx.draw_networkx(G, with_labels=False, pos=pos, node_color=cols, width=0.3)
-        plt.savefig('LFR_Graph_Data/mu_0_{1}/graph_0{0}/graph_0{0}_mu_0_{1}.png'.format(i+1, int(mu*10)))
+        plt.savefig('LFR_Graph_Data/1000_Node/mu_0_{1}/graph_0{0}/graph_0{0}_mu_0_{1}.png'.format(i+1, int(mu*10)))
         plt.close()

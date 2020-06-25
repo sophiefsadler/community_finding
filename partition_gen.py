@@ -3,7 +3,7 @@ Run a community finding algorithm for many runs to obtain data from which to
 calculate the coassociation matrix and certain node features.
 
 Usage:
-  partition_gen.py (louvain | infomap | lpa)
+  partition_gen.py (louvain | infomap | lpa) (200 | 1000)
 
 Options:
   -h --help            Show this help message
@@ -52,7 +52,7 @@ def calc_infomap(G):
         seed = int(time.time() * 1000)
         seeds.append(seed)
         im = Infomap('-s {0}'.format(seed))
-        im.add_nodes(range(200))
+        im.add_nodes(range(n_nodes))
         im.add_links(list(G.edges()))
         im.run('--silent')
         partition = im.get_modules()
@@ -64,7 +64,7 @@ def calc_infomap(G):
     return partitions, seeds
 
 
-def calc_lpa(G):
+def calc_lpa(G, n_nodes):
     print('Calculating partitions')
     partitions = []
     seeds = []
@@ -72,7 +72,7 @@ def calc_lpa(G):
         seed = int(time.time() * 1000)
         random.seed(seed)
         seeds.append(seed)
-        partition_list = [0 for _ in range(200)]
+        partition_list = [0 for _ in range(n_nodes)]
         partition = list(asyn_lpa_communities(G))
         for comm_index, comm in enumerate(partition):
             for node in comm:
@@ -82,7 +82,7 @@ def calc_lpa(G):
     return partitions, seeds
 
 
-def calc_partitions(G, args):
+def calc_partitions(G, args, n_nodes):
     '''
     In all cases, the partitions returned at the end should be a 1000 x n numpy array,
     where 1000 is the number of runs of the community finding algorithm, and n is the
@@ -95,28 +95,32 @@ def calc_partitions(G, args):
         partitions, seeds = calc_louvain(G)
         folder = 'Louvain'
     elif args.get('infomap'):
-        partitions, seeds = calc_infomap(G)
+        partitions, seeds = calc_infomap(G, n_nodes)
         folder = 'Infomap'
     elif args.get('lpa'):
-        partitions, seeds = calc_lpa(G)
+        partitions, seeds = calc_lpa(G, n_nodes)
         folder = 'LPA'
     return partitions, seeds, folder
 
 
 if __name__ == '__main__':
     args = docopt(__doc__)
+    if args.get('200'):
+        n_nodes = 200
+    elif args.get('1000'):
+        n_nodes = 1000
     for i in [1, 2, 3, 4]:
         for j in [1, 2, 3, 4, 5]:
-            with open('LFR_Graph_Data/mu_0_{0}/graph_0{1}/graph_0{1}_mu_0_{0}.yml'.format(i, j)) as f:
+            with open('LFR_Graph_Data/{2}_Node/mu_0_{0}/graph_0{1}/graph_0{1}_mu_0_{0}.yml'.format(i, j, n_nodes)) as f:
                 graph_info = yaml.load(f, Loader=yaml.Loader)
             G = graph_info['G']
             for node in G.nodes:
                 del G.nodes[node]['community']
-            partitions, seeds, folder = calc_partitions(G, args)
-            path = os.path.join('LFR_Graph_Data/', 'Community_Data', folder, 'Runs', 
+            partitions, seeds, folder = calc_partitions(G, args, n_nodes)
+            path = os.path.join('LFR_Graph_Data/{0}_Node/'.format(n_nodes), 'Community_Data', folder, 'Runs', 
                                 'graph_0{1}_mu_0_{0}_runs.npy'.format(i, j))
             np.save(path, partitions)
-            seeds_path = os.path.join('LFR_Graph_Data/', 'Community_Data', folder, 'Runs', 
+            seeds_path = os.path.join('LFR_Graph_Data/{0}_Node/'.format(n_nodes), 'Community_Data', folder, 'Runs', 
                                     'graph_0{1}_mu_0_{0}_seeds'.format(i, j))
             with open(seeds_path, 'wb') as fp:
                 pickle.dump(seeds, fp)
