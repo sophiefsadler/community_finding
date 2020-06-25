@@ -33,7 +33,7 @@ def get_file_names(i,j, args, n_nodes):
     return parts_file, coassociation_file
 
 
-def calc_C(C, partitions):
+def calc_C(C, partitions, n_nodes):
     print('Applying partitions to C')
     for i in trange(partitions.shape[0]):
         part = partitions[i, :]
