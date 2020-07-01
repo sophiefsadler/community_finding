@@ -44,7 +44,7 @@ def calc_louvain(G):
     return partitions, seeds
 
 
-def calc_infomap(G):
+def calc_infomap(G, n_nodes):
     print('Calculating partitions')
     partitions = []
     seeds = []
