@@ -2,8 +2,12 @@
 Calculate the coassociation matrix from the runs of the community finding
 algorithm.
 
+The parts_folder is where the generated partitions have been saved. The save
+location of the coassociation matrices will be determined automatically
+relative to this.
+
 Usage:
-  coassociation_gen.py (louvain | infomap | lpa) (200 | 1000)
+  coassociation_gen.py <parts_folder>
 
 Options:
   -h --help            Show this help message
@@ -12,29 +16,13 @@ Options:
 
 import os
 import numpy as np
-import yaml
 import itertools
 
 from docopt import docopt
 from tqdm import tqdm, trange
 
 
-def get_file_names(i,j, args, n_nodes):
-    if args.get('louvain'):
-        folder = 'Louvain'
-    elif args.get('infomap'):
-        folder = 'Infomap'
-    elif args.get('lpa'):
-        folder = 'LPA'
-    parts_file = os.path.join('LFR_Graph_Data/{0}_Node/'.format(n_nodes), 'Community_Data', folder, 'Runs',
-                              'graph_0{0}_mu_0_{1}_runs.npy'.format(j,i))
-    coassociation_file = os.path.join('LFR_Graph_Data/{0}_Node/'.format(n_nodes), 'Community_Data', folder, 'Coassociation',
-                                      'graph_0{0}_mu_0_{1}_coassociation.npy'.format(j,i))
-    return parts_file, coassociation_file
-
-
 def calc_C(C, partitions, n_nodes):
-    print('Applying partitions to C')
     for i in trange(partitions.shape[0]):
         part = partitions[i, :]
         for node1, node2 in itertools.combinations(np.arange(n_nodes), r=2):
@@ -48,14 +36,15 @@ def calc_C(C, partitions, n_nodes):
 
 if __name__ == '__main__':
     args = docopt(__doc__)
-    if args.get('200'):
-        n_nodes = 200
-    elif args.get('1000'):
-        n_nodes = 1000
-    for i in [1, 2, 3, 4]:
-        for j in [1, 2, 3, 4, 5]:
-            parts_file, coassociation_file = get_file_names(i, j, args, n_nodes)
-            parts = np.load(parts_file)
-            C = np.zeros((n_nodes, n_nodes))
-            C = calc_C(C, parts, n_nodes)
-            np.save(coassociation_file, C)
+    parts_folder = args.get('<parts_folder>')
+    parts_files = [x for x in os.listdir(parts_folder) if x.endswith('.npy')]
+    for fil in tqdm(parts_files):
+        fil_path = os.path.join(parts_folder, fil)
+        parts = np.load(fil_path)
+        n_nodes = parts.shape[1]
+        C = np.zeros((n_nodes, n_nodes))
+        C = calc_C(C, parts, n_nodes)
+        coassociation_fil = fil.strip('runs.npy') + 'coassociation.npy'
+        coassociation_folder = parts_folder.strip('/').strip('Runs') + 'Coassociation'
+        coassociation_file = os.path.join(coassociation_folder, coassociation_fil)
+        np.save(coassociation_file, C)
