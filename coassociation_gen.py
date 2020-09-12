@@ -46,5 +46,7 @@ if __name__ == '__main__':
         C = calc_C(C, parts, n_nodes)
         coassociation_fil = fil.strip('runs.npy') + 'coassociation.npy'
         coassociation_folder = parts_folder.strip('/').strip('Runs') + 'Coassociation'
+        if not os.path.exists(coassociation_folder):
+            os.mkdir(coassociation_folder)
         coassociation_file = os.path.join(coassociation_folder, coassociation_fil)
         np.save(coassociation_file, C)
