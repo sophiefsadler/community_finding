@@ -14,7 +14,7 @@ should be specific to this experiment and will be created if it doesn't already
 exist.
 
 NB: If mode is set to "pair", i.e. the experiment is for pair-node metrics, the undersample
-rate is automatically set to 1.0 (i.e. the number of each class will automatically match). This is
+rate is ignored and the number of each class will automatically match. This is
 because there is an excess of data for the pair-node experiments.
 
 Usage:
@@ -50,27 +50,40 @@ RUNS = 100
 
 def node_dataset_gen(X, entropy_values, us):
     kmeans_seed = random.randint(0, 10000)
-    kmeans = KMeans(n_clusters=2, random_state=kmeans_seed).fit(entropy_values)
+    kmeans = KMeans(n_clusters=2, random_state=kmeans_seed).fit(entropy_values.reshape(-1, 1))
     cutoff = np.mean(kmeans.cluster_centers_)
-    y = np.where(entropy_values.reshape(-1) < cutoff, 0, 1)
-    y = pd.DataFrame(y, index=X.index, columns=['Stability'])
-    split_seed = random.randint(0, 10000)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=split_seed)
-    if us != None:
+    y = np.where(entropy_values < cutoff, 0, 1)
+    if us == 'strat':
+        stab_unstab = np.bincount(y)
+        num_unstab = stab_unstab[1]
+        num_stab = int(num_unstab / 0.4)
+        lowest_entropy_indices = list(entropy_values.argsort()[:num_stab][::-1])
+        highest_entropy_indices = list(entropy_values.argsort()[-num_unstab:][::-1])
+        X_lowest = X.iloc[lowest_entropy_indices]
+        X_highest = X.iloc[highest_entropy_indices]
+        X = pd.concat([X_lowest, X_highest])
+        y = [0 for _ in range(num_stab)] + [1 for _ in range(num_unstab)]
+        y = pd.DataFrame(y, index=X.index, columns=['Stability'])
+    elif us != None:
+        y = pd.DataFrame(y, index=X.index, columns=['Stability'])
         under = RandomUnderSampler(sampling_strategy=us)
         undersampler = Pipeline(steps=[('us', under)])
-        X_train, y_train = undersampler.fit_resample(X_train, y_train)
-    return X_train, X_test, y_train, y_test
+        X, y = undersampler.fit_resample(X, y)
+    split_seed = random.randint(0, 10000)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=split_seed)
+    return X_train, X_test, y_train, y_test, cutoff
 
 
 def pair_dataset_gen(X, entropy_values):
-    y = np.where(entropy_values.reshape(-1) < 0.5, 0, 1)
+    lowest_entropy_indices = list(entropy_values.argsort()[:500][::-1])
+    highest_entropy_indices = list(entropy_values.argsort()[-500:][::-1])
+    X_lowest = X.iloc[lowest_entropy_indices]
+    X_highest = X.iloc[highest_entropy_indices]
+    X = pd.concat([X_lowest, X_highest])
+    y = [0 for _ in range(500)] + [1 for _ in range(500)]
     y = pd.DataFrame(y, index=X.index, columns=['Same Community'])
     split_seed = random.randint(0, 10000)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=split_seed)
-    under = RandomUnderSampler(sampling_strategy=1.0)
-    undersampler = Pipeline(steps=[('us', under)])
-    X_train, y_train = undersampler.fit_resample(X_train, y_train)
     return X_train, X_test, y_train, y_test
 
 
@@ -86,9 +99,9 @@ def create_and_save_data(feats_fil, entropies_fil, results_folder, us, mode):
     X = pd.read_csv(feats_fil, index_col=0)
     entrops = pd.read_csv(entropies_fil, index_col=0)
     entropy_values = np.array(entrops['Entropy'])
-    entropy_values = entropy_values.reshape(-1, 1)
+    entropy_values = entropy_values.reshape(-1)
     if mode == 'node':
-        X_train, X_test, y_train, y_test = node_dataset_gen(X, entropy_values, us)
+        X_train, X_test, y_train, y_test, cutoff = node_dataset_gen(X, entropy_values, us)
     elif mode == 'pair':
         X_train, X_test, y_train, y_test = pair_dataset_gen(X, entropy_values)
     save_dataset(X_train, X_test, y_train, y_test)
@@ -157,6 +170,8 @@ def set_mode_and_us(args):
         mode = 'node'
         if us == 'None':
             us = None
+        elif us == 'strat':
+            us = 'strat'
         else:
             us = float(us)
     elif args.get('pair'):
