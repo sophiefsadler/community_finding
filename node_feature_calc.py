@@ -90,10 +90,6 @@ def calc_new_metrics(new_metrics, G, partitions, node_degrees):
             N = G.number_of_nodes()
             m = G.number_of_edges()
 
-            # In order to find the triangle participation for all nodes, find all the triangles in a community
-            all_cliques = nx.enumerate_all_cliques(comm_subgraph)
-            triangle_cliques = [k for k in all_cliques if len(k) == 3]
-
             for nod in dict(comm_degrees).keys():
                 e_in = comm_degrees[nod]
                 e_out = node_degrees[nod] - e_in
@@ -121,12 +117,7 @@ def calc_new_metrics(new_metrics, G, partitions, node_degrees):
                 nc = ct + e_out/(2*m - 2*e_in + e_out)
                 new_metrics['Normalised Cut'][nod].append(nc)
 
-                # Calculate triangle participation
-                nods_in_triangles = []
-                for triangle in triangle_cliques:
-                    if nod in triangle:
-                        nods_in_triangles += triangle
-                tp = len(set(nods_in_triangles))/w
+                tp = nx.triangles(comm_subgraph, nod)
                 new_metrics['Triangle Participation'][nod].append(tp)
                 
     return new_metrics
