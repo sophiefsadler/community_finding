@@ -45,7 +45,7 @@ from docopt import docopt
 from tqdm import trange
 
 
-RUNS = 100
+RUNS = 10
 
 
 def node_dataset_gen(X, entropy_values, us):
@@ -56,7 +56,7 @@ def node_dataset_gen(X, entropy_values, us):
     if us == 'strat':
         stab_unstab = np.bincount(y)
         num_unstab = stab_unstab[1]
-        num_stab = int(num_unstab / 0.4)
+        num_stab = int(num_unstab / 0.4) ## Strategic undersampling rate should be changed at some point
         lowest_entropy_indices = list(entropy_values.argsort()[:num_stab][::-1])
         highest_entropy_indices = list(entropy_values.argsort()[-num_unstab:][::-1])
         X_lowest = X.iloc[lowest_entropy_indices]
@@ -69,6 +69,8 @@ def node_dataset_gen(X, entropy_values, us):
         under = RandomUnderSampler(sampling_strategy=us)
         undersampler = Pipeline(steps=[('us', under)])
         X, y = undersampler.fit_resample(X, y)
+    else:
+        y = pd.DataFrame(y, index=X.index, columns=['Stability'])
     split_seed = random.randint(0, 10000)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=split_seed)
     return X_train, X_test, y_train, y_test, cutoff
