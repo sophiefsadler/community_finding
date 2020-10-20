@@ -1,0 +1,101 @@
+#!/bin/bash
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features_Additional/graph_01_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies_Additional/graph_01_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results_Additional/mu_0_2/graph_01 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features_Additional/graph_02_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies_Additional/graph_02_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results_Additional/mu_0_2/graph_02 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features_Additional/graph_03_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies_Additional/graph_03_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results_Additional/mu_0_2/graph_03 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features_Additional/graph_04_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies_Additional/graph_04_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results_Additional/mu_0_2/graph_04 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features_Additional/graph_05_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies_Additional/graph_05_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results_Additional/mu_0_2/graph_05 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features_Additional/graph_06_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies_Additional/graph_06_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results_Additional/mu_0_2/graph_06 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features_Additional/graph_07_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies_Additional/graph_07_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results_Additional/mu_0_2/graph_07 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features_Additional/graph_08_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies_Additional/graph_08_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results_Additional/mu_0_2/graph_08 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features_Additional/graph_09_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies_Additional/graph_09_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results_Additional/mu_0_2/graph_09 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features_Additional/graph_010_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies_Additional/graph_010_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results_Additional/mu_0_2/graph_010 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features_Additional/graph_011_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies_Additional/graph_011_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results_Additional/mu_0_2/graph_011 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features_Additional/graph_012_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies_Additional/graph_012_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results_Additional/mu_0_2/graph_012 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features_Additional/graph_013_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies_Additional/graph_013_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results_Additional/mu_0_2/graph_013 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features_Additional/graph_014_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies_Additional/graph_014_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results_Additional/mu_0_2/graph_014 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features_Additional/graph_015_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies_Additional/graph_015_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results_Additional/mu_0_2/graph_015 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features/graph_01_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies/graph_01_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results/mu_0_2/graph_01 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features/graph_02_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies/graph_02_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results/mu_0_2/graph_02 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features/graph_03_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies/graph_03_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results/mu_0_2/graph_03 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features/graph_04_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies/graph_04_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results/mu_0_2/graph_04 node
+
+python3 importance_experiment.py \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Features/graph_05_mu_0_2_features.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Node_Entropies/graph_05_mu_0_2_entropies.csv \
+LFR_Graph_Data/Final_Test/Community_Data/LPA/Results/mu_0_2/graph_05 node
