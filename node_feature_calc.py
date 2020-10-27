@@ -117,7 +117,15 @@ def calc_new_metrics(new_metrics, G, partitions, node_degrees):
                 nc = ct + e_out/(2*m - 2*e_in + e_out)
                 new_metrics['Normalised Cut'][nod].append(nc)
 
-                tp = nx.triangles(comm_subgraph, nod)
+                tp_nods = []
+                neighbours = comm_subgraph.neighbors(nod)
+                for nbr_nod in neighbours:
+                    if nbr_nod not in tp_nods:
+                        for nbr_nod_2 in neighbours:
+                            if comm_subgraph.has_edge(nbr_nod, nbr_nod_2):
+                                tp_nods.extend((nbr_nod, nbr_nod_2))
+                                break
+                tp = len(list(set(tp_nods)))/w
                 new_metrics['Triangle Participation'][nod].append(tp)
                 
     return new_metrics
