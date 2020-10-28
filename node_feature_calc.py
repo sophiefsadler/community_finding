@@ -118,7 +118,7 @@ def calc_new_metrics(new_metrics, G, partitions, node_degrees):
                 new_metrics['Normalised Cut'][nod].append(nc)
 
                 tp_nods = []
-                neighbours = comm_subgraph.neighbors(nod)
+                neighbours = list(comm_subgraph.neighbors(nod))
                 for nbr_nod in neighbours:
                     if nbr_nod not in tp_nods:
                         for nbr_nod_2 in neighbours:
