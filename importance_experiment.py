@@ -53,10 +53,10 @@ def node_dataset_gen(X, entropy_values, us):
     kmeans = KMeans(n_clusters=2, random_state=kmeans_seed).fit(entropy_values.reshape(-1, 1))
     cutoff = np.mean(kmeans.cluster_centers_)
     y = np.where(entropy_values < cutoff, 0, 1)
-    if us == 'strat':
+    if us != None:
         stab_unstab = np.bincount(y)
         num_unstab = stab_unstab[1]
-        num_stab = int(num_unstab / 0.4) ## Strategic undersampling rate should be changed at some point
+        num_stab = int(num_unstab / us)
         lowest_entropy_indices = list(entropy_values.argsort()[:num_stab][::-1])
         highest_entropy_indices = list(entropy_values.argsort()[-num_unstab:][::-1])
         X_lowest = X.iloc[lowest_entropy_indices]
@@ -64,11 +64,6 @@ def node_dataset_gen(X, entropy_values, us):
         X = pd.concat([X_lowest, X_highest])
         y = [0 for _ in range(num_stab)] + [1 for _ in range(num_unstab)]
         y = pd.DataFrame(y, index=X.index, columns=['Stability'])
-    elif us != None:
-        y = pd.DataFrame(y, index=X.index, columns=['Stability'])
-        under = RandomUnderSampler(sampling_strategy=us)
-        undersampler = Pipeline(steps=[('us', under)])
-        X, y = undersampler.fit_resample(X, y)
     else:
         y = pd.DataFrame(y, index=X.index, columns=['Stability'])
     split_seed = random.randint(0, 10000)
@@ -172,8 +167,6 @@ def set_mode_and_us(args):
         mode = 'node'
         if us == 'None':
             us = None
-        elif us == 'strat':
-            us = 'strat'
         else:
             us = float(us)
     elif args.get('pair'):
