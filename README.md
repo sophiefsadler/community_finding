@@ -1,5 +1,7 @@
 # community_finding
 
+This repository contains code for my papers *Towards explainable community finding* and *Selecting informative features for post-hoc community explanation*.
+
 ## Random Forest Feature Selection Experiments
 You can find all the experiments that have been run so far in jupyter notebooks. There are 3 folders - Node_Feature_Experiments, Pair_Feature_Experiments, and Community_Feature_Experiments, splitting the code into experiments run on these 3 different levels.
 ### Node Feature Level
